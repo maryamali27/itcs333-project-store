@@ -3,11 +3,11 @@
 ## Members & module allocation
 | Student ID | Name | Module(s) owned |
 |---|---|---|
-| 20XXXXXX |  | m1_auth |
-| 20XXXXXX |  | m2_catalog |
-| 20XXXXXX |  | m3_cart |
+| 20XXXXXX | Fatima Raeef | m1_auth |
+| 202209427 | Maryam Ali Hasan | m2_catalog |
+| 20XXXXXX | Alia | m3_cart |
 | 20XXXXXX |  | m4_orders |
-| 20XXXXXX |  | m5_admin |
+| 20XXXXXX | Maryam Khalid | m5_admin |
 
 ## Weekly contribution log (optional)
 | Week | Student | What I did (module, files, PRs) |
