@@ -3,10 +3,11 @@
  * Clean, minimal style with a cool palette and Auto / Light / Dark modes,
  * built on Bootstrap 5.3.3 + Bootstrap Icons 1.11.3.
  *
- * Every page <head> (see public/catalog/index.html for the full lines with integrity hashes):
+ * Every page <head> (see public/catalog/index.html for the full lines with integrity hashes).
+ * Use relative paths, so pages work at any URL (e.g. from public/<module>/index.html):
  *   <meta name="color-scheme" content="light dark">
- *   bootstrap.min.css, bootstrap-icons.min.css, then /theme.css
- *   <script src="/color-mode.js"></script>
+ *   bootstrap.min.css, bootstrap-icons.min.css, then ../theme.css
+ *   <script src="../color-mode.js"></script>
  * Then use normal Bootstrap classes (btn-primary, card, badge, alert...).
  */
 

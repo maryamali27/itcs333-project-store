@@ -1,6 +1,6 @@
 // Campus Marketplace - Auto / Light / Dark theme for every page (Bootstrap 5.3 color modes).
 // Load it in <head> so the page never flashes the wrong colors:
-//   <script src="/color-mode.js"></script>
+//   <script src="../color-mode.js"></script>   (path relative to the page)
 // Add a theme button anywhere on the page:
 //   <button type="button" class="btn icon-btn" data-theme-toggle></button>
 (function () {
