@@ -12,6 +12,14 @@ function column(html) {
   return `<div class="col-sm-6 col-lg-4 col-xl-3">${html}</div>`;
 }
 
+// Mark one chip as selected and remember its category.
+function selectChip(chip) {
+  selectedCategory = chip.dataset.category;
+  document.querySelectorAll('#category-chips [data-category]').forEach((c) => {
+    c.setAttribute('aria-pressed', String(c === chip));
+  });
+}
+
 // Load categories and add one filter chip for each.
 async function loadCategories() {
   const res = await apiFetch('/api/catalog/categories');
@@ -90,10 +98,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('category-chips').addEventListener('click', (e) => {
     const chip = e.target.closest('[data-category]');
     if (!chip) return;
-    selectedCategory = chip.dataset.category;
-    document.querySelectorAll('#category-chips [data-category]').forEach((c) => {
-      c.setAttribute('aria-pressed', String(c === chip));
-    });
+    selectChip(chip);
     loadCatalog();
   });
 
@@ -116,14 +121,24 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
   // After closing, remove ?product=ID so a refresh does not open it again.
   sheet.addEventListener('close', () => {
-    if (location.search) history.replaceState(null, '', location.pathname);
+    const url = new URL(location.href);
+    if (url.searchParams.has('product')) {
+      url.searchParams.delete('product');
+      history.replaceState(null, '', url);
+    }
   });
 
   // Categories first, so tiles can show their category name.
   await loadCategories();
+
+  // Links from the home page: catalog/?category=2 selects that category,
+  // catalog/?product=3 opens that product.
+  const params = new URLSearchParams(location.search);
+  const chip = document.querySelector(`#category-chips [data-category="${CSS.escape(params.get('category') || '')}"]`);
+  if (chip) selectChip(chip);
+
   await loadCatalog();
 
-  // Links like catalog/?product=3 (from the home page) open that product directly.
-  const productId = new URLSearchParams(location.search).get('product');
+  const productId = params.get('product');
   if (productId && /^\d+$/.test(productId)) showProduct(productId);
 });

@@ -7,13 +7,8 @@
   <meta name="description" content="Browse and search the Campus Marketplace catalog.">
   <title>Catalog - Campus Marketplace</title>
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"
-        integrity="sha384-XGjxtQfXaH2tnPFa9x+ruJTuLE3Aa6LhHSWRr1XeTyhezb4abCG4ccI5AkVDxqC+" crossorigin="anonymous">
   <link href="../theme.css" rel="stylesheet">
   <script src="../color-mode.js"></script>
 </head>
@@ -29,19 +24,16 @@
   </nav>
 
   <main class="container">
-    <h1 class="page-title">Catalog. <span class="subtle">Everything you need for campus, in one place.</span></h1>
+    <h1 class="page-title">Catalog</h1>
 
     <div id="error-banner" class="alert alert-danger" role="alert" style="display: none;"></div>
 
-    <div class="search-pill mb-3">
-      <i class="bi bi-search" aria-hidden="true"></i>
-      <input id="search" type="search" class="form-control form-control-lg"
+    <div class="d-flex flex-wrap align-items-center gap-3 mb-4">
+      <input id="search" type="search" class="form-control search-pill flex-grow-1 w-auto"
              placeholder="Search products" aria-label="Search products">
-    </div>
-
-    <div id="category-chips" class="d-flex flex-wrap gap-2 mb-4"
-         role="group" aria-label="Filter by category">
-      <button type="button" class="btn chip" data-category="" aria-pressed="true">All</button>
+      <div id="category-chips" class="d-flex flex-wrap gap-2" role="group" aria-label="Filter by category">
+        <button type="button" class="btn chip" data-category="" aria-pressed="true">All</button>
+      </div>
     </div>
 
     <h2 class="visually-hidden">Products</h2>
@@ -57,7 +49,7 @@
   <!-- Product details sheet (native <dialog>: Esc closes it, focus is handled by the browser) -->
   <dialog id="product-sheet" class="sheet" aria-labelledby="sheet-title">
     <form method="dialog" class="d-flex justify-content-end p-3 pb-0">
-      <button type="submit" class="btn icon-btn" aria-label="Close"><i class="bi bi-x-lg" aria-hidden="true"></i></button>
+      <button type="submit" class="btn-close p-3" aria-label="Close"></button>
     </form>
     <div id="sheet-body" class="px-4 px-md-5 pb-5"></div>
   </dialog>

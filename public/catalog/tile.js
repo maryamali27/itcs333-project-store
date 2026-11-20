@@ -12,23 +12,22 @@ export function stockText(p) {
     : '<p class="stock stock-out">Out of stock</p>';
 }
 
-// A product card. With `href` the tile is a link (home page);
-// without it, it is a button with data-id (catalog page opens the sheet).
+// A product card. The product name is the link that covers the whole card:
+// with `href` it is a normal link (home page), without it a button with data-id
+// (the catalog page opens the details sheet).
 export function productTile(p, categoryName, href = '') {
   const name = escapeHtml(p.name);
-  const label = `View details<i class="bi bi-chevron-right ms-1" aria-hidden="true"></i>`;
-  const action = href
-    ? `<a class="link-more stretched-link" href="${href}" aria-label="View details: ${name}">${label}</a>`
-    : `<button type="button" class="link-more stretched-link" data-id="${p.id}" aria-label="View details: ${name}">${label}</button>`;
+  const link = href
+    ? `<a class="tile-link stretched-link" href="${href}">${name}</a>`
+    : `<button type="button" class="tile-link stretched-link" data-id="${p.id}">${name}</button>`;
 
   return `
     <div class="card card-hover h-100">
-      <div class="card-body p-4 d-flex flex-column">
-        <p class="eyebrow mb-2">${escapeHtml(categoryName || '')}</p>
-        <h3 class="card-title tile-name mb-2">${name}</h3>
+      <div class="card-body p-4">
+        <p class="eyebrow mb-1">${escapeHtml(categoryName || '')}</p>
+        <h3 class="tile-name mb-3">${link}</h3>
         <p class="price mb-1">${formatPrice(p.price)}</p>
         ${stockText(p)}
-        <div class="mt-auto pt-4">${action}</div>
       </div>
     </div>`;
 }
@@ -38,9 +37,9 @@ export function skeletonTile() {
   return `
     <div class="card h-100 placeholder-glow" aria-hidden="true">
       <div class="card-body p-4">
-        <span class="placeholder col-4 mb-3"></span>
-        <span class="placeholder col-8 placeholder-lg mb-2"></span>
-        <span class="placeholder col-3 mb-5"></span>
+        <span class="placeholder col-4 mb-2"></span>
+        <span class="placeholder col-8 placeholder-lg mb-3"></span>
+        <span class="placeholder col-3 mb-1"></span>
         <span class="placeholder col-5"></span>
       </div>
     </div>`;
