@@ -1,15 +1,40 @@
 <?php
 declare(strict_types=1);
 
-/**
- * ITCS333 Project starter — m2_catalog handler (module under construction).
- * Implement the endpoints in contracts/ for your module.
- * The routing context is in $GLOBALS['__route'] ('area', 'rest', 'uri').
- * Use db() from src/db.php and the helpers in src/http.php.
- */
+// m2_catalog — Catalog module (Maryam Ali Hasan). Contract: contracts/catalog.md
 
-$rest = $GLOBALS['__route']['rest'] ?? '';
+$rest = $GLOBALS['__route']['rest'] ?? '';   // e.g. "/products" or "/products/3"
+$pdo = db();
 
-// TODO: implement your module's endpoints here (see contracts/).
+// Return a product with the exact types the contract wants.
+function product_json(array $p): array
+{
+    return [
+        'id'          => (int) $p['id'],
+        'category_id' => (int) $p['category_id'],
+        'name'        => $p['name'],
+        'price'       => (float) $p['price'],
+        'stock'       => (int) $p['stock'],
+    ];
+}
 
-send_error(501, 'NOT_IMPLEMENTED', ['module' => 'm2_catalog', 'rest' => $rest]);
+// GET /api/catalog/products   (optional ?category_id=N and ?q=text)
+if ($rest === '/products') {
+    $sql = 'SELECT * FROM products WHERE 1=1';
+    $params = [];
+
+    if (!empty($_GET['category_id'])) {
+        $sql .= ' AND category_id = ?';
+        $params[] = (int) $_GET['category_id'];
+    }
+    if (!empty($_GET['q'])) {
+        $sql .= ' AND name LIKE ?';
+        $params[] = '%' . $_GET['q'] . '%';
+    }
+
+    $stmt = $pdo->prepare($sql . ' ORDER BY id');
+    $stmt->execute($params);
+    send_json(200, ['data' => array_map('product_json', $stmt->fetchAll())]);
+}
+
+send_error(501, 'NOT_IMPLEMENTED');
