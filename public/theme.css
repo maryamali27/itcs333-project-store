@@ -1,0 +1,341 @@
+/*
+ * Campus Marketplace - shared theme for every module page.
+ * Clean, minimal style with a cool palette and Auto / Light / Dark modes,
+ * built on Bootstrap 5.3.3 + Bootstrap Icons 1.11.3.
+ *
+ * Every page <head> (see public/catalog/index.html for the full lines with integrity hashes):
+ *   <meta name="color-scheme" content="light dark">
+ *   bootstrap.min.css, bootstrap-icons.min.css, then /theme.css
+ *   <script src="/color-mode.js"></script>
+ * Then use normal Bootstrap classes (btn-primary, card, badge, alert...).
+ */
+
+/* ===== 1. Color tokens ===== */
+
+:root {
+  --cm-bg: #f5f7fa;            /* page background */
+  --cm-surface: #ffffff;       /* cards, inputs, sheets */
+  --cm-text: #1f2a37;          /* body text */
+  --cm-heading: #1e3a5f;       /* headings, brand */
+  --cm-muted: #5b6b80;         /* secondary text */
+  --cm-border: #dfe6ee;
+  --cm-accent: #2f6690;        /* buttons, links */
+  --cm-accent-rgb: 47, 102, 144;
+  --cm-accent-strong: #1e3a5f; /* hover / pressed */
+  --cm-on-accent: #ffffff;     /* text on accent */
+  --cm-success: #0b7a75;
+  --cm-success-rgb: 11, 122, 117;
+  --cm-success-subtle: #e2f1ef;
+  --cm-success-text: #075c58;
+  --cm-neutral-subtle: #e8edf3;
+  --cm-neutral-text: #3d4b5c;
+  --cm-glass: rgba(255, 255, 255, 0.72);
+  --cm-shadow-rgb: 30, 58, 95;
+  --cm-radius: 20px;
+}
+
+[data-bs-theme="dark"] {
+  --cm-bg: #0d141e;
+  --cm-surface: #161f2b;
+  --cm-text: #e6edf5;
+  --cm-heading: #f1f5fa;
+  --cm-muted: #9aa8ba;
+  --cm-border: #273242;
+  --cm-accent: #6aa6d8;
+  --cm-accent-rgb: 106, 166, 216;
+  --cm-accent-strong: #8dbde6;
+  --cm-on-accent: #0d141e;
+  --cm-success: #4fbfb7;
+  --cm-success-rgb: 79, 191, 183;
+  --cm-success-subtle: #12332f;
+  --cm-success-text: #7fd8cf;
+  --cm-neutral-subtle: #222d3b;
+  --cm-neutral-text: #b8c4d3;
+  --cm-glass: rgba(13, 20, 30, 0.72);
+  --cm-shadow-rgb: 0, 0, 0;
+}
+
+/* Hand the tokens to Bootstrap, so its classes use them in every mode */
+:root,
+[data-bs-theme] {
+  --bs-font-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --bs-body-bg: var(--cm-bg);
+  --bs-body-color: var(--cm-text);
+  --bs-emphasis-color: var(--cm-heading);
+  --bs-secondary-color: var(--cm-muted);
+  --bs-border-color: var(--cm-border);
+  --bs-primary: var(--cm-accent);
+  --bs-primary-rgb: var(--cm-accent-rgb);
+  --bs-success: var(--cm-success);
+  --bs-success-rgb: var(--cm-success-rgb);
+  --bs-success-bg-subtle: var(--cm-success-subtle);
+  --bs-success-text-emphasis: var(--cm-success-text);
+  --bs-secondary-bg-subtle: var(--cm-neutral-subtle);
+  --bs-secondary-text-emphasis: var(--cm-neutral-text);
+  --bs-link-color: var(--cm-accent);
+  --bs-link-color-rgb: var(--cm-accent-rgb);
+  --bs-link-hover-color: var(--cm-accent-strong);
+}
+
+/* ===== 2. Base ===== */
+
+body {
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5 {
+  color: var(--cm-heading);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+/* ===== 3. Layout ===== */
+
+/* Frosted-glass navigation bar */
+.navbar-glass {
+  background-color: var(--cm-glass);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid var(--cm-border);
+}
+
+.navbar-glass .navbar-brand {
+  color: var(--cm-heading);
+  font-weight: 600;
+}
+
+/* Big centered page headline */
+.hero {
+  text-align: center;
+  padding: 4.5rem 0 2.5rem;
+}
+
+.hero-title {
+  font-size: clamp(2.75rem, 7vw, 5rem);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+  margin-bottom: 0.75rem;
+}
+
+.hero-lead {
+  font-size: clamp(1.125rem, 2.2vw, 1.5rem);
+  color: var(--cm-muted);
+  margin: 0;
+}
+
+.site-footer {
+  margin-top: 5rem;
+  padding: 2rem 0;
+  border-top: 1px solid var(--cm-border);
+  color: var(--cm-muted);
+  font-size: 0.8125rem;
+}
+
+/* ===== 4. Components ===== */
+
+/* Cards: rounded, no border, soft shadow */
+.card {
+  --bs-card-bg: var(--cm-surface);
+  --bs-card-color: var(--cm-text);
+  --bs-card-border-width: 0;
+  --bs-card-border-radius: var(--cm-radius);
+  --bs-card-inner-border-radius: var(--cm-radius);
+  box-shadow: 0 2px 12px rgba(var(--cm-shadow-rgb), 0.06);
+}
+
+.card-hover {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 16px 36px rgba(var(--cm-shadow-rgb), 0.12);
+}
+
+.eyebrow {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--cm-muted);
+}
+
+.price {
+  font-size: 1.0625rem;
+  color: var(--cm-text);
+}
+
+.stock {
+  font-size: 0.875rem;
+  color: var(--cm-success-text);
+  margin-bottom: 0;
+}
+
+.stock-out {
+  color: var(--cm-muted);
+}
+
+.sheet-title {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+/* Buttons: pill shape, at least 44px tall (easy to tap) */
+.btn {
+  --bs-btn-padding-y: 0.6rem;
+  --bs-btn-padding-x: 1.25rem;
+  --bs-btn-border-radius: 980px;
+  --bs-btn-font-weight: 500;
+}
+
+.btn-primary {
+  --bs-btn-color: var(--cm-on-accent);
+  --bs-btn-bg: var(--cm-accent);
+  --bs-btn-border-color: var(--cm-accent);
+  --bs-btn-hover-color: var(--cm-on-accent);
+  --bs-btn-hover-bg: var(--cm-accent-strong);
+  --bs-btn-hover-border-color: var(--cm-accent-strong);
+  --bs-btn-active-color: var(--cm-on-accent);
+  --bs-btn-active-bg: var(--cm-accent-strong);
+  --bs-btn-active-border-color: var(--cm-accent-strong);
+  --bs-btn-focus-shadow-rgb: var(--cm-accent-rgb);
+}
+
+.btn-outline-primary {
+  --bs-btn-color: var(--cm-accent);
+  --bs-btn-border-color: var(--cm-accent);
+  --bs-btn-hover-color: var(--cm-on-accent);
+  --bs-btn-hover-bg: var(--cm-accent);
+  --bs-btn-hover-border-color: var(--cm-accent);
+  --bs-btn-active-color: var(--cm-on-accent);
+  --bs-btn-active-bg: var(--cm-accent-strong);
+  --bs-btn-active-border-color: var(--cm-accent-strong);
+  --bs-btn-focus-shadow-rgb: var(--cm-accent-rgb);
+}
+
+/* Round 44x44 icon button (e.g. the theme switch) */
+.icon-btn {
+  --bs-btn-padding-x: 0;
+  --bs-btn-padding-y: 0;
+  --bs-btn-color: var(--cm-heading);
+  --bs-btn-border-color: transparent;
+  --bs-btn-hover-color: var(--cm-heading);
+  --bs-btn-hover-bg: var(--cm-neutral-subtle);
+  --bs-btn-hover-border-color: transparent;
+  --bs-btn-active-bg: var(--cm-neutral-subtle);
+  --bs-btn-active-border-color: transparent;
+  --bs-btn-focus-shadow-rgb: var(--cm-accent-rgb);
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.125rem;
+}
+
+/* Filter chips (toggle buttons with aria-pressed) */
+.chip {
+  --bs-btn-color: var(--cm-text);
+  --bs-btn-bg: var(--cm-surface);
+  --bs-btn-border-color: var(--cm-border);
+  --bs-btn-hover-color: var(--cm-text);
+  --bs-btn-hover-bg: var(--cm-neutral-subtle);
+  --bs-btn-hover-border-color: var(--cm-border);
+  --bs-btn-active-color: var(--cm-on-accent);
+  --bs-btn-active-bg: var(--cm-accent);
+  --bs-btn-active-border-color: var(--cm-accent);
+  --bs-btn-focus-shadow-rgb: var(--cm-accent-rgb);
+}
+
+.chip[aria-pressed="true"] {
+  --bs-btn-color: var(--cm-on-accent);
+  --bs-btn-bg: var(--cm-accent);
+  --bs-btn-border-color: var(--cm-accent);
+  --bs-btn-hover-color: var(--cm-on-accent);
+  --bs-btn-hover-bg: var(--cm-accent-strong);
+  --bs-btn-hover-border-color: var(--cm-accent-strong);
+}
+
+/* Inputs: rounded, soft focus ring */
+.form-control,
+.form-select {
+  background-color: var(--cm-surface);
+  border-radius: 12px;
+}
+
+.form-control:focus,
+.form-select:focus {
+  background-color: var(--cm-surface);
+  border-color: var(--cm-accent);
+  box-shadow: 0 0 0 4px rgba(var(--cm-accent-rgb), 0.18);
+}
+
+/* Pill search box with an icon inside */
+.search-pill {
+  position: relative;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.search-pill .bi {
+  position: absolute;
+  top: 50%;
+  left: 1.25rem;
+  transform: translateY(-50%);
+  color: var(--cm-muted);
+  pointer-events: none;
+}
+
+.search-pill .form-control {
+  padding-left: 3rem;
+  border-radius: 980px;
+}
+
+.badge {
+  font-weight: 500;
+}
+
+.alert {
+  border: 0;
+  border-radius: 14px;
+}
+
+/* Sheet: native <dialog> in the middle with a blurred background */
+.sheet {
+  width: min(560px, calc(100% - 32px));
+  padding: 0;
+  border: 0;
+  border-radius: 24px;
+  background: var(--cm-surface);
+  color: var(--cm-text);
+  box-shadow: 0 24px 60px rgba(var(--cm-shadow-rgb), 0.25);
+}
+
+.sheet::backdrop {
+  background: rgba(13, 20, 30, 0.35);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.sheet[open] {
+  animation: sheet-in 0.25s ease-out;
+}
+
+@keyframes sheet-in {
+  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ===== 5. Accessibility: respect "reduce motion" in the device settings ===== */
+
+@media (prefers-reduced-motion: reduce) {
+  .card-hover,
+  .card-hover:hover,
+  .sheet[open] {
+    transition: none;
+    transform: none;
+    animation: none;
+  }
+}
