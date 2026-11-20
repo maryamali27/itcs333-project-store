@@ -37,4 +37,16 @@ if ($rest === '/products') {
     send_json(200, ['data' => array_map('product_json', $stmt->fetchAll())]);
 }
 
+// GET /api/catalog/products/{id}
+if (preg_match('#^/products/(\d+)$#', $rest, $m)) {
+    $stmt = $pdo->prepare('SELECT * FROM products WHERE id = ?');
+    $stmt->execute([(int) $m[1]]);
+    $product = $stmt->fetch();
+
+    if (!$product) {
+        send_error(404, 'NOT_FOUND');
+    }
+    send_json(200, product_json($product));
+}
+
 send_error(501, 'NOT_IMPLEMENTED');
