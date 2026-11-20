@@ -1,0 +1,358 @@
+/*
+ * Campus Marketplace - shared theme on top of Bootstrap 5.3 (light + dark mode).
+ * New page? Copy the <head> of public/catalog/index.html, then use Bootstrap classes
+ * plus the helpers below.
+ */
+
+/* Inter font, stored in the project (license: fonts/Inter-LICENSE.txt) */
+@font-face {
+  font-family: "Inter";
+  src: url("fonts/inter-latin-variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+/* ===== Colors ===== */
+
+:root {
+  --cm-bg: #f5f5f7;
+  --cm-surface: #ffffff;
+  --cm-text: #1d1d1f;
+  --cm-muted: #6e6e73;
+  --cm-border: #d2d2d7;
+  --cm-neutral: #e8e8ed;
+  --cm-accent: #0071e3;
+  --cm-accent-rgb: 0, 113, 227;
+  --cm-link: #0066cc;
+  --cm-link-rgb: 0, 102, 204;
+  --cm-success: #0b7a75;
+  --cm-glass: rgba(251, 251, 253, 0.8);
+  --cm-shadow: 2px 4px 12px rgba(0, 0, 0, 0.08);
+  --cm-radius: 18px;
+}
+
+[data-bs-theme="dark"] {
+  --cm-bg: #000000;
+  --cm-surface: #1d1d1f;
+  --cm-text: #f5f5f7;
+  --cm-muted: #86868b;
+  --cm-border: #424245;
+  --cm-neutral: #2c2c2e;
+  --cm-link: #2997ff;
+  --cm-link-rgb: 41, 151, 255;
+  --cm-success: #4fbfb7;
+  --cm-glass: rgba(22, 22, 23, 0.8);
+  --cm-shadow: none;
+}
+
+/* Bootstrap reads these, so all its classes use our colors */
+:root,
+[data-bs-theme] {
+  --bs-font-sans-serif: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, Arial, sans-serif;
+  --bs-body-font-size: 1.0625rem;
+  --bs-body-bg: var(--cm-bg);
+  --bs-body-color: var(--cm-text);
+  --bs-secondary-color: var(--cm-muted);
+  --bs-border-color: var(--cm-border);
+  --bs-link-color: var(--cm-link);
+  --bs-link-color-rgb: var(--cm-link-rgb);
+  --bs-link-hover-color-rgb: var(--cm-link-rgb);
+}
+
+/* ===== Base and layout ===== */
+
+body {
+  letter-spacing: -0.01em;
+  overflow-x: clip; /* lets the shelf run to the window edge without a sideways scroll */
+}
+
+h1, h2, h3 {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1080px;
+  }
+}
+
+.navbar-glass {
+  --bs-navbar-padding-y: 0;
+  min-height: 48px;
+  background: var(--cm-glass);
+  -webkit-backdrop-filter: saturate(180%) blur(20px); /* Safari */
+  backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid var(--cm-border);
+  font-size: 0.875rem;
+}
+
+.navbar-glass a {
+  color: var(--cm-text);
+  text-decoration: none;
+}
+
+.navbar-brand {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.hero {
+  text-align: center;
+  padding: 4rem 0 3.5rem;
+}
+
+.hero-title {
+  font-size: clamp(2.25rem, 5vw, 3.5rem);
+  font-weight: 700;
+}
+
+.hero-lead,
+.eyebrow {
+  color: var(--cm-muted);
+}
+
+.hero-lead {
+  font-size: 1.25rem;
+}
+
+.page-title {
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-weight: 700;
+  padding: 2.5rem 0 1.5rem;
+  margin: 0;
+}
+
+.section-title {
+  font-size: 1.75rem;
+}
+
+.site-footer {
+  margin-top: 5rem;
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--cm-border);
+  color: var(--cm-muted);
+  font-size: 0.75rem;
+}
+
+/* ===== Buttons ===== */
+
+/* Pill shape, at least 44px tall */
+.btn {
+  --bs-btn-padding-y: 0.6rem;
+  --bs-btn-padding-x: 1.375rem;
+  --bs-btn-font-size: 1.0625rem;
+  --bs-btn-border-radius: 980px;
+  --bs-btn-focus-shadow-rgb: var(--cm-accent-rgb);
+}
+
+.btn:hover,
+.tile-link:hover {
+  text-decoration: none;
+}
+
+.btn-primary {
+  --bs-btn-bg: var(--cm-accent);
+  --bs-btn-border-color: var(--cm-accent);
+  --bs-btn-hover-bg: #0077ed;
+  --bs-btn-hover-border-color: #0077ed;
+  --bs-btn-active-bg: var(--cm-accent);
+}
+
+/* Round 44x44 icon button (theme switch, close, shelf arrows) */
+.icon-btn {
+  --bs-btn-padding-x: 0;
+  --bs-btn-padding-y: 0;
+  --bs-btn-color: var(--cm-text);
+  --bs-btn-hover-color: var(--cm-text);
+  --bs-btn-hover-bg: var(--cm-neutral);
+  --bs-btn-active-bg: var(--cm-neutral);
+  --bs-btn-border-color: transparent;
+  --bs-btn-hover-border-color: transparent;
+  --bs-btn-active-border-color: transparent;
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Gray version for the shelf arrows (‹ ›) */
+.paddle {
+  font-size: 1.5rem;
+  line-height: 1;
+  --bs-btn-bg: var(--cm-neutral);
+  --bs-btn-hover-bg: var(--cm-border);
+  --bs-btn-active-bg: var(--cm-border);
+  --bs-btn-disabled-bg: var(--cm-neutral);
+  --bs-btn-disabled-border-color: transparent;
+}
+
+/* Filter chip: black when aria-pressed="true" */
+.chip {
+  --bs-btn-font-size: 0.9375rem;
+  --bs-btn-color: var(--cm-text);
+  --bs-btn-bg: var(--cm-surface);
+  --bs-btn-border-color: var(--cm-border);
+  --bs-btn-hover-color: var(--cm-text);
+  --bs-btn-hover-border-color: var(--cm-text);
+  --bs-btn-active-color: var(--cm-bg);
+  --bs-btn-active-bg: var(--cm-text);
+  --bs-btn-active-border-color: var(--cm-text);
+}
+
+.chip[aria-pressed="true"] {
+  --bs-btn-color: var(--cm-bg);
+  --bs-btn-bg: var(--cm-text);
+  --bs-btn-hover-color: var(--cm-bg);
+  --bs-btn-hover-bg: var(--cm-text);
+}
+
+/* ===== Cards and product tiles ===== */
+
+.card {
+  --bs-card-bg: var(--cm-surface);
+  --bs-card-border-width: 0;
+  --bs-card-border-radius: var(--cm-radius);
+  box-shadow: var(--cm-shadow);
+}
+
+.card-hover {
+  transition: transform 0.3s ease;
+}
+
+.card-hover:hover {
+  transform: scale(1.015);
+}
+
+/* The tile's name is a link/button covering the whole card; show its focus on the card */
+.card:has(.stretched-link:focus-visible) {
+  outline: 3px solid rgba(var(--cm-link-rgb), 0.6);
+  outline-offset: 2px;
+}
+
+.tile-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  outline: none; /* the focus ring is drawn on the card instead */
+}
+
+.tile-name {
+  font-size: 1.375rem;
+}
+
+.eyebrow {
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.stock {
+  font-size: 0.875rem;
+  color: var(--cm-success);
+  margin: 0;
+}
+
+.stock-out {
+  color: var(--cm-muted);
+}
+
+.category-tile {
+  flex: 1 1 220px;
+}
+
+.category-name {
+  font-size: 1.125rem;
+}
+
+/* ===== Shelf: cards that scroll sideways (arrows instead of a scrollbar) ===== */
+
+.shelf {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(250px, 280px);
+  gap: 1.25rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 0.25rem;
+  scrollbar-width: none;
+  margin-right: calc(50% - 50vw); /* run on to the right edge of the window */
+  padding: 0.5rem calc(50vw - 50%) 1rem 0.25rem;
+}
+
+.shelf::-webkit-scrollbar {
+  display: none; /* Safari */
+}
+
+.shelf > * {
+  scroll-snap-align: start;
+}
+
+.shelf:focus-visible {
+  outline: 3px solid rgba(var(--cm-link-rgb), 0.6);
+  border-radius: var(--cm-radius);
+}
+
+/* ===== Forms and messages ===== */
+
+.form-control {
+  background-color: var(--cm-surface);
+  border-radius: 12px;
+}
+
+.form-control:focus {
+  background-color: var(--cm-surface);
+  border-color: var(--cm-accent);
+  box-shadow: 0 0 0 4px rgba(var(--cm-accent-rgb), 0.2);
+}
+
+.search-pill {
+  max-width: 600px;
+  padding-inline: 1.25rem;
+  border-radius: 980px;
+}
+
+.alert {
+  border: 0;
+  border-radius: 14px;
+}
+
+/* ===== Product sheet (native <dialog>) ===== */
+
+.sheet {
+  width: min(560px, calc(100% - 32px));
+  padding: 0;
+  border: 0;
+  border-radius: 24px;
+  background: var(--cm-surface);
+  color: var(--cm-text);
+}
+
+.sheet::backdrop {
+  background: rgba(0, 0, 0, 0.4);
+  -webkit-backdrop-filter: blur(8px); /* Safari */
+  backdrop-filter: blur(8px);
+}
+
+.sheet-title {
+  font-size: 2.25rem;
+  font-weight: 700;
+}
+
+/* Respect "reduce motion" in the device settings */
+@media (prefers-reduced-motion: reduce) {
+  .card-hover:hover {
+    transform: none;
+  }
+}
