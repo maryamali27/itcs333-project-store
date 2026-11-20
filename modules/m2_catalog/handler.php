@@ -5,8 +5,10 @@ declare(strict_types=1);
 
 $rest = $GLOBALS['__route']['rest'] ?? '';   // e.g. "/products" or "/products/3"
 
-// If the database fails, still answer with JSON (never an HTML error page).
-set_exception_handler(function () {
+// If the database fails, log the real error for developers
+// and still answer with JSON (never an HTML error page).
+set_exception_handler(function (Throwable $e) {
+    error_log('m2_catalog: ' . $e->getMessage());
     send_error(500, 'SERVER_ERROR');
 });
 
@@ -44,8 +46,9 @@ if ($rest === '/products') {
     }
     if ($q !== '') {
         // LOWER() on both sides = case-insensitive on SQLite, MySQL and PgSQL.
-        $sql .= ' AND LOWER(name) LIKE LOWER(?)';
-        $params[] = '%' . $q . '%';
+        // Escape % and _ so they are searched as normal characters, not wildcards.
+        $sql .= " AND LOWER(name) LIKE LOWER(?) ESCAPE '!'";
+        $params[] = '%' . str_replace(['!', '%', '_'], ['!!', '!%', '!_'], $q) . '%';
     }
 
     $stmt = $pdo->prepare($sql . ' ORDER BY id');
