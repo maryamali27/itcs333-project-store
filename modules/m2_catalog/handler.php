@@ -49,4 +49,14 @@ if (preg_match('#^/products/(\d+)$#', $rest, $m)) {
     send_json(200, product_json($product));
 }
 
-send_error(501, 'NOT_IMPLEMENTED');
+// GET /api/catalog/categories
+if ($rest === '/categories') {
+    $categories = [];
+    foreach ($pdo->query('SELECT id, name FROM categories ORDER BY id') as $c) {
+        $categories[] = ['id' => (int) $c['id'], 'name' => $c['name']];
+    }
+    send_json(200, ['data' => $categories]);
+}
+
+// Any other URL under /api/catalog
+send_error(404, 'NOT_FOUND');
