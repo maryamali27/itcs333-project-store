@@ -1,36 +1,15 @@
 // m2_catalog page: browse, filter by category, search, and view one product.
 // Loaded as a module (type="module"), so nothing here leaks into the global scope.
 // Uses apiFetch(), showBanner(), hideBanner() and escapeHtml() from ../app.js.
+import { formatPrice, stockText, productTile, skeletonTile } from './tile.js';
 
 const categoryNames = {}; // id -> name, filled by loadCategories()
 let selectedCategory = ''; // '' means all categories
 let latestRequest = 0;     // used to ignore old answers that arrive late
 
-function formatPrice(price) {
-  return '$' + price.toFixed(2);
-}
-
-// "50 in stock" or "Out of stock".
-function stockText(p) {
-  return p.stock > 0
-    ? `<p class="stock">${p.stock} in stock</p>`
-    : '<p class="stock stock-out">Out of stock</p>';
-}
-
-// Gray placeholder cards shown while products are loading.
-function skeletonCards(count) {
-  const card = `
-    <div class="col-sm-6 col-lg-4 col-xl-3" aria-hidden="true">
-      <div class="card h-100 placeholder-glow">
-        <div class="card-body p-4">
-          <span class="placeholder col-4 mb-3"></span>
-          <span class="placeholder col-8 placeholder-lg mb-2"></span>
-          <span class="placeholder col-3 mb-5"></span>
-          <span class="placeholder col-6 rounded-pill placeholder-lg"></span>
-        </div>
-      </div>
-    </div>`;
-  return card.repeat(count);
+// Wrap a tile in a Bootstrap grid column.
+function column(html) {
+  return `<div class="col-sm-6 col-lg-4 col-xl-3">${html}</div>`;
 }
 
 // Load categories and add one filter chip for each.
@@ -77,29 +56,15 @@ async function loadCatalog() {
 
   count.textContent = body.data.length === 1 ? '1 product' : `${body.data.length} products`;
   if (body.data.length === 0) {
-    list.innerHTML = '<p class="text-center text-body-secondary">No products found. Try another search.</p>';
+    list.innerHTML = '<p class="text-body-secondary">No products found. Try another search.</p>';
     return;
   }
-  list.innerHTML = body.data.map((p) => `
-    <div class="col-sm-6 col-lg-4 col-xl-3">
-      <div class="card card-hover h-100">
-        <div class="card-body p-4 d-flex flex-column">
-          <p class="eyebrow mb-2">${escapeHtml(categoryNames[p.category_id] || '')}</p>
-          <h2 class="card-title h4 mb-1">${escapeHtml(p.name)}</h2>
-          <p class="price mb-1">${formatPrice(p.price)}</p>
-          ${stockText(p)}
-          <div class="mt-auto pt-3">
-            <button type="button" class="btn btn-primary stretched-link" data-id="${p.id}">View details</button>
-          </div>
-        </div>
-      </div>
-    </div>`
-  ).join('');
+  list.innerHTML = body.data.map((p) => column(productTile(p, categoryNames[p.category_id]))).join('');
 }
 
 // Open the details sheet for one product.
 async function showProduct(id) {
-  const res = await apiFetch('/api/catalog/products/' + id);
+  const res = await apiFetch('/api/catalog/products/' + encodeURIComponent(id));
   if (!res) return;
 
   const sheet = document.getElementById('product-sheet');
@@ -119,7 +84,7 @@ async function showProduct(id) {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-  document.getElementById('catalog-list').innerHTML = skeletonCards(4);
+  document.getElementById('catalog-list').innerHTML = column(skeletonTile()).repeat(4);
 
   // Category chips: only one can be selected at a time.
   document.getElementById('category-chips').addEventListener('click', (e) => {
@@ -144,13 +109,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (button) showProduct(button.dataset.id);
   });
 
-  // Clicking the blurred background (outside the sheet) closes it.
   const sheet = document.getElementById('product-sheet');
+  // Clicking the blurred background (outside the sheet) closes it.
   sheet.addEventListener('click', (e) => {
     if (e.target === sheet) sheet.close();
   });
+  // After closing, remove ?product=ID so a refresh does not open it again.
+  sheet.addEventListener('close', () => {
+    if (location.search) history.replaceState(null, '', location.pathname);
+  });
 
-  // Categories first, so cards can show their category name.
+  // Categories first, so tiles can show their category name.
   await loadCategories();
-  loadCatalog();
+  await loadCatalog();
+
+  // Links like catalog/?product=3 (from the home page) open that product directly.
+  const productId = new URLSearchParams(location.search).get('product');
+  if (productId && /^\d+$/.test(productId)) showProduct(productId);
 });
