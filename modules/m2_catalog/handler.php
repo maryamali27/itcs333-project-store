@@ -4,6 +4,17 @@ declare(strict_types=1);
 // m2_catalog — Catalog module (Maryam Ali Hasan). Contract: contracts/catalog.md
 
 $rest = $GLOBALS['__route']['rest'] ?? '';   // e.g. "/products" or "/products/3"
+
+// If the database fails, still answer with JSON (never an HTML error page).
+set_exception_handler(function () {
+    send_error(500, 'SERVER_ERROR');
+});
+
+// The catalog is read-only for shoppers (writes happen in m5_admin).
+if (http_method() !== 'GET') {
+    send_error(405, 'METHOD_NOT_ALLOWED');
+}
+
 $pdo = db();
 
 // Return a product with the exact types the contract wants.
@@ -20,16 +31,21 @@ function product_json(array $p): array
 
 // GET /api/catalog/products   (optional ?category_id=N and ?q=text)
 if ($rest === '/products') {
-    $sql = 'SELECT * FROM products WHERE 1=1';
+    $sql = 'SELECT id, category_id, name, price, stock FROM products WHERE 1=1';
     $params = [];
 
-    if (!empty($_GET['category_id'])) {
+    // filter_input() gives false/null for bad values like "abc" or q[]=x.
+    $categoryId = filter_input(INPUT_GET, 'category_id', FILTER_VALIDATE_INT);
+    $q = trim((string) filter_input(INPUT_GET, 'q'));
+
+    if ($categoryId) {
         $sql .= ' AND category_id = ?';
-        $params[] = (int) $_GET['category_id'];
+        $params[] = $categoryId;
     }
-    if (!empty($_GET['q'])) {
-        $sql .= ' AND name LIKE ?';
-        $params[] = '%' . $_GET['q'] . '%';
+    if ($q !== '') {
+        // LOWER() on both sides = case-insensitive on SQLite, MySQL and PgSQL.
+        $sql .= ' AND LOWER(name) LIKE LOWER(?)';
+        $params[] = '%' . $q . '%';
     }
 
     $stmt = $pdo->prepare($sql . ' ORDER BY id');
@@ -39,7 +55,7 @@ if ($rest === '/products') {
 
 // GET /api/catalog/products/{id}
 if (preg_match('#^/products/(\d+)$#', $rest, $m)) {
-    $stmt = $pdo->prepare('SELECT * FROM products WHERE id = ?');
+    $stmt = $pdo->prepare('SELECT id, category_id, name, price, stock FROM products WHERE id = ?');
     $stmt->execute([(int) $m[1]]);
     $product = $stmt->fetch();
 
